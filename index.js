@@ -35,7 +35,7 @@ function dealWith(inPath, up) {
 }
 var copyFile = _copyFile;
 function _copyFile (src, dst, opts, callback) {
-  console.log('copyyyyy')
+  console.log('using _copyFile')
   fs.createReadStream(src)
     .pipe(fs.createWriteStream(dst, {
       mode: opts.mode
@@ -49,6 +49,7 @@ function _copyFile (src, dst, opts, callback) {
 }
 if (fs.copyFile) {
   copyFile = function (src, dst, opts, callback) {
+    console.log('using fs.copyFile')
     fs.copyFile(src, dst, callback);
   }
 }
@@ -62,6 +63,7 @@ function makeDebug(config) {
 }
 module.exports = copyFiles;
 function copyFiles(args, config, callback) {
+  console.log('ooooooo')
   if (typeof config === 'function') {
     callback = config;
     config = {
@@ -73,6 +75,9 @@ function copyFiles(args, config, callback) {
       up: config
     };
   }
+
+  console.log(config)
+
   var debug = makeDebug(config);
   var copied = false;
   var opts = config.up || 0;
@@ -96,12 +101,13 @@ function copyFiles(args, config, callback) {
   toStream(input.map(function(srcP) {return srcP.startsWith('~') ? untildify(srcP) : srcP;}))
   .pipe(through(function (pathName, _, next) {
     var self = this;
+    console.log(pathName)
     glob(pathName, globOpts, function (err, paths) {
       if (err) {
         return next(err);
       }
       paths.forEach(function (unglobbedPath) {
-        debug(`unglobed path: ${unglobbedPath}`);
+        console.log(`unglobed path: ${unglobbedPath}`);
         self.push(unglobbedPath);
       });
       next();
@@ -109,6 +115,7 @@ function copyFiles(args, config, callback) {
   }))
   .on('error', callback)
   .pipe(through(function (pathName, _, next) {
+    console.log('kkkkk')
     fs.stat(pathName, function (err, pathStat) {
       if (err) {
         return next(err);
@@ -129,9 +136,13 @@ function copyFiles(args, config, callback) {
       if (!pathStat.isFile()) {
         return next(new Error('how can it be neither file nor folder?'))
       }
+
+      console.log('.......', soft)
       if (!soft) {
         return done();
       }
+
+      console.log('sssss')
       fs.stat(outName, function(err){
         if(!err){
           //file exists
@@ -157,6 +168,10 @@ function copyFiles(args, config, callback) {
     var outName = path.join(outDir, dealWith(pathName, opts));
     debug(`copy from: ${pathName}`)
     debug(`copy to: ${outName}`)
+
+    console.log(`copy from: ${pathName}`)
+    console.log(`copy to: ${outName}`)
+
     copyFile(pathName, outName, pathStat, next)
   }))
   .on('error', callback)
