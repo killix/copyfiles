@@ -119,7 +119,6 @@ function copyFiles(args, config, callback) {
   }))
   .on('error', callback)
   .pipe(through(function (pathName, _, next) {
-    console.log('kkkkk')
     fs.stat(pathName, function (err, pathStat) {
       if (err) {
         return next(err);
@@ -141,7 +140,6 @@ function copyFiles(args, config, callback) {
         return next(new Error('how can it be neither file nor folder?'))
       }
 
-      console.log('.......', soft)
       if (!soft) {
         return done();
       }
