@@ -100,7 +100,9 @@ function copyFiles(args, config, callback) {
     globOpts.follow = true;
   }
   outDir = outDir.startsWith('~') ? untildify(outDir) : outDir;
+  console.log(`outDir: ${outDir}`)
   outDir = outDir.startsWith('./') ? outDir : './' + outDir;
+  console.log(`outDir: ${outDir}`)
 
   toStream(input.map(function(srcP) {return srcP.startsWith('~') ? untildify(srcP) : srcP;}))
   .pipe(through(function (pathName, _, next) {
@@ -171,6 +173,7 @@ function copyFiles(args, config, callback) {
     debug(`copy from: ${pathName}`)
     debug(`copy to: ${outName}`)
 
+    console.log(`outName: ${outName}`)
     console.log(`copy from: ${pathName}`)
     console.log(`copy to: ${outName}`)
 
