@@ -101,8 +101,6 @@ function copyFiles(args, config, callback) {
   }
   outDir = outDir.startsWith('~') ? untildify(outDir) : outDir;
   console.log(`outDir: ${outDir}`)
-  outDir = outDir.startsWith('./') ? outDir : './' + outDir;
-  console.log(`outDir: ${outDir}`)
 
   toStream(input.map(function(srcP) {return srcP.startsWith('~') ? untildify(srcP) : srcP;}))
   .pipe(through(function (pathName, _, next) {
@@ -170,6 +168,9 @@ function copyFiles(args, config, callback) {
     var pathName = obj.pathName;
     var pathStat = obj.pathStat;
     var outName = path.join(outDir, dealWith(pathName, opts));
+    outName = outName.startsWith('./') ? outName : './' + outName;
+    console.log(`outName: ${outName}`)
+
     debug(`copy from: ${pathName}`)
     debug(`copy to: ${outName}`)
 
