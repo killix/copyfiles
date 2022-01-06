@@ -35,6 +35,7 @@ function dealWith(inPath, up) {
 }
 var copyFile = _copyFile;
 function _copyFile (src, dst, opts, callback) {
+  console.log('copyyyyy')
   fs.createReadStream(src)
     .pipe(fs.createWriteStream(dst, {
       mode: opts.mode
